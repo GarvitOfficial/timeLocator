@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OSINT Time-to-Location Estimator</title>
+  <meta name="description" content="Estimate likely locations from an observed time using OSINT heuristics." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>OSINT Time-to-Location Estimator</h1>
+    <p class="tagline">Enter the time they said it is right now. We do the rest.</p>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Input</h2>
+      <form id="osint-form" class="form-grid" autocomplete="off">
+        <div class="field" id="reportedTimeWrap">
+          <label for="reportedTime">Reported time now (HH:MM)</label>
+          <input type="time" id="reportedTime" required />
+          <small>Example: they said "it’s 09:30" where they are.</small>
+        </div>
+
+        <div class="field">
+          <label>Visual clock (click or drag)</label>
+          <div id="clockPicker" class="clock-picker">
+            <div class="clock-toolbar">
+              <button type="button" class="chip small selected" data-mode="minute">Set Minute</button>
+              <button type="button" class="chip small" data-mode="hour">Set Hour</button>
+            </div>
+            <canvas id="clockCanvas" width="240" height="240"></canvas>
+            <div class="clock-readout" id="clockReadout">--:--</div>
+          </div>
+          <small>Use the clock to set time visually; it syncs with the input.</small>
+        </div>
+
+        <div class="field">
+          <label class="switch"><input type="checkbox" id="advancedMode" /> <span>Use specific observed datetime (optional)</span></label>
+          <small>Enable when you have a timestamp you captured earlier.</small>
+        </div>
+
+        <div class="field hidden" id="observedWrap">
+          <label for="observed">Observed datetime (assumed local)</label>
+          <input type="datetime-local" id="observed" />
+          <small>Interpreted as your local timezone; used only if enabled above.</small>
+        </div>
+
+        <div class="field">
+          <label>Context (optional)</label>
+          <div class="chips" id="contextChips">
+            <button type="button" class="chip selected" data-value="none">None</button>
+            <button type="button" class="chip" data-value="9am">9 AM</button>
+            <button type="button" class="chip" data-value="noon">Noon</button>
+            <button type="button" class="chip" data-value="9pm">9 PM</button>
+            <button type="button" class="chip" data-value="sleep">About to Sleep</button>
+            <button type="button" class="chip" data-value="custom">Custom</button>
+          </div>
+          <div class="field hidden" id="customTimeWrap">
+            <label for="customTime">Custom local time</label>
+            <input type="time" id="customTime" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="useNow" class="ghost">Use current time</button>
+          <button type="submit" class="primary">Analyze</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Results</h2>
+      <div class="toolbar">
+        <input type="text" id="filterText" placeholder="Filter by city or timezone..." />
+        <label class="switch"><input type="checkbox" id="onlyExact" /> <span>Exact matches only</span></label>
+      </div>
+      <div id="resultsInfo" class="muted"></div>
+      <div id="results" class="results"></div>
+      <div id="resultsPager" class="pager"></div>
+    </section>
+
+    <section class="card">
+      <h2>All Timezones</h2>
+      <div class="toolbar">
+        <input type="text" id="tzFilter" placeholder="Search all timezones..." />
+      </div>
+      <div id="allTz" class="tz-list"></div>
+      <div id="tzPager" class="pager"></div>
+    </section>
+
+    <section class="card">
+      <h2>Notes</h2>
+      <ul class="notes">
+        <li>Enter the time they reported; we compare every world timezone’s local time.</li>
+        <li>Exact means the local time in that timezone matches the time you entered.</li>
+        <li>Observed datetime is optional; it’s interpreted in your local timezone.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <span>Built for OSINT workflows • Static site ready for GitHub Pages • <a href="https://github.com/GarvitOfficial/timeLocator" target="_blank" rel="noopener">GitHub: GarvitOfficial/timeLocator</a></span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-timezone@0.5.45/builds/moment-timezone-with-data-1970-2030.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
